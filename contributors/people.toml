@@ -17,6 +17,10 @@
 # To remove your names, delete your entry (or set fields empty) in a PR. The next
 # contributors.py run, and the next build, drop them.
 
+[people.Javed-Ali]
+display_name = "Javed Ali"
+consent_source = "Repository owner requested this display name in the Codex customization chat on 2026-10-20."
+
 [people.YouseifUS]
 sync_github_name = true
 

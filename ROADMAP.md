@@ -1,5 +1,7 @@
 # PdfCraft roadmap
 
+> **Fork update, 2026-10-20:** M14 standalone customization: removed community promotion and upstream trademark assets; source and updates target Javed-Ali/Mypdfcraft. No feature-parity scores changed. Formatting and static asset/reference checks passed; compiled checks blocked by missing Windows C++ linker (link.exe).
+
 **Stage: alpha** · next: beta, ~25% (ready for real work 50% → 75%) and ~400–700 h away
 
 > **Last reviewed:** 2026-10-18 · **Last updated:** 2026-10-18 · **Change:** minor (M5, PR #1971: bounded nested FDF export excludes source page/page-tree dictionaries; refreshed against upstream 4db6ac4a; estimates unchanged)
@@ -171,6 +173,8 @@ Ranked; detail and the full milestone table in [docs/roadmap.md](docs/roadmap.md
 | 8 | 1.0 polish: performance, right-to-left, missing languages, keyboard-only (M14) | 55–95 |
 
 ## Progress log
+
+- **2026-10-20 (fork, M14):** Removed community promotion, trademark images and old promotional screenshots. Source and manual updates target Javed-Ali/Mypdfcraft. No feature scores changed; Windows compiled validation requires the C++ build tools.
 
 - **2026-10-19 (M14, #3373):** The main menu and its long submenus scroll in short windows, keeping their commands reachable. Estimates unchanged.
 
