@@ -1,5 +1,4 @@
-//! Community links: the Discord button is one click away everywhere; Help menu, About dialog and
-//! home screen open the ArtCraft and PdfCraft pages.
+//! Standalone home screen and project links in Help and About.
 
 use egui_kittest::Harness;
 use egui_kittest::kittest::Queryable;
@@ -18,42 +17,40 @@ fn harness(setup: impl FnOnce(&mut PdfCraftApp) + 'static) -> Harness<'static, P
 }
 
 #[test]
-fn discord_button_in_the_top_bar_opens_discord() {
-    let mut h = harness(|_| {});
-    h.get_by_label("Discord").click();
-    h.run_steps(2);
-    assert_eq!(h.state().last_opened_url.as_deref(), Some(links::DISCORD));
-    assert_eq!(links::DISCORD, "https://discord.gg/artcraft");
+fn home_has_no_community_prompts() {
+    let h = harness(|_| {});
+    h.get_by_label("Welcome to PdfCraft");
+    h.get_by_label("Recommended tools");
+    for label in ["Discord", "Join our Discord", "Join the ArtCraft community", "ArtCraft"] {
+        assert!(h.query_by_label(label).is_none(), "unexpected promotion: {label}");
+    }
+    assert!(h.state().last_opened_url.is_none());
 }
 
 #[test]
-fn home_screen_links() {
-    for (label, url) in [
-        ("Join our Discord", links::DISCORD),
-        ("PdfCraft web page", "https://getartcraft.com/apps/pdfcraft"),
-        ("PdfCraft on GitHub", "https://github.com/storytold/pdfcraft"),
-        ("ArtCraft website", "https://getartcraft.com"),
-    ] {
-        let mut h = harness(|_| {});
-        h.get_by_label("Join the ArtCraft community");
-        h.get_by_label(label).click();
-        h.run_steps(2);
-        assert_eq!(h.state().last_opened_url.as_deref(), Some(url), "{label}");
+fn only_the_project_source_is_registered() {
+    assert_eq!(links::LINKS.len(), 1);
+    let link = links::LINKS.first().unwrap();
+    assert_eq!(link.command, "help.github");
+    assert_eq!(link.url, "https://github.com/Javed-Ali/Mypdfcraft");
+    for id in ["help.discord", "help.app_page", "help.website"] {
+        assert!(pdfcraft_engine::commands::command(id).is_none());
     }
 }
 
 #[test]
-fn about_dialog_shows_the_brand_and_links() {
+fn about_dialog_opens_project_source_without_branding() {
     let pdf = b"%PDF-1.7\n1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj\n3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 200 200] >> endobj\ntrailer << /Root 1 0 R >>\n%%EOF";
     // With a document open, so the home screen's own links are not on screen.
     let mut h = harness(move |app| {
         app.open_bytes("one.pdf", None, pdf.to_vec()).unwrap();
         app.dialog = Some(Dialog::About);
     });
-    assert!(h.query_all_by_label("ArtCraft").count() >= 2, "the mark and the wordmark (alt text)");
-    h.get_by_label("Join our Discord").click();
+    assert!(h.query_by_label("ArtCraft").is_none());
+    assert!(h.query_by_label("Join our Discord").is_none());
+    h.get_by_label("PdfCraft on GitHub").click();
     h.run_steps(2);
-    assert_eq!(h.state().last_opened_url.as_deref(), Some(links::DISCORD));
+    assert_eq!(h.state().last_opened_url.as_deref(), Some(links::GITHUB));
 }
 
 #[test]
